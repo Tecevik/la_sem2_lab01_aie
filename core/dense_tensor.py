@@ -277,11 +277,14 @@ class DenseTensor:
         Args:
             other: t2
         """
-        if not isinstance(other, DenseTensor):
+        if not hasattr(other, "shape") or not hasattr(other, "data"):
             return NotImplemented
         check_shapes_match(self.shape, other.shape)
         data = [a + b for a,b in zip(self.data,other.data)]
         return DenseTensor(self.shape, data=data)
+
+    def __radd__(self, other: DenseTensor) -> DenseTensor:
+        return self.__add__(other)
 
     def __sub__(self, other: DenseTensor) -> DenseTensor:
         """
@@ -290,10 +293,17 @@ class DenseTensor:
         Args:
             other: t2
         """
-        if not isinstance(other, DenseTensor):
+        if not hasattr(other, "shape") or not hasattr(other, "data"):
             return NotImplemented
         check_shapes_match(self.shape, other.shape)
         data = [a-b for a,b in zip(self.data,other.data)]
+        return DenseTensor(self.shape, data=data)
+
+    def __rsub__(self, other: DenseTensor) -> DenseTensor:
+        if not hasattr(other, "shape") or not hasattr(other, "data"):
+            return NotImplemented
+        check_shapes_match(self.shape, other.shape)
+        data = [a-b for a,b in zip(other.data,self.data)]
         return DenseTensor(self.shape, data=data)
 
     def __mul__(self, scalar: float | int) -> DenseTensor:
@@ -344,7 +354,7 @@ class DenseTensor:
             atol:  абсолютная погрешность (по умолчанию 1e-8)
             rtol:  относительная погрешность (по умолчанию 1e-5)
         """
-        if not isinstance(other, DenseTensor):
+        if not hasattr(other, "shape") or not hasattr(other, "data"):
             return False
         if self.shape != other.shape:
             return False
