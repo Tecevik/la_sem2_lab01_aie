@@ -27,8 +27,6 @@ def tt_svd(
         max_rank: максимальный TT-ранг (None = без ограничения)
         eps:      относительная точность усечения
     """
-    if not isinstance(tensor, DenseTensor):
-        raise TypeError("тензор должен быть DenseTensor")
     if tensor.ndim == 0:
         raise ValueError("тензор должен иметь хотя бы один режим")
     if max_rank is not None and max_rank < 1:

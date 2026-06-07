@@ -111,7 +111,7 @@ class DenseTensor:
         return DenseTensor(checked_shape, data=data)
 
     @staticmethod
-    def from_nested_list(nested: list) -> DenseTensor:
+    def from_nested_list(nested: list | tuple) -> DenseTensor:
         """
         Создаёт тензор из вложенного списка Python.
         Автоматически определяет shape.
@@ -119,10 +119,10 @@ class DenseTensor:
         Args:
             nested: список
         """
-        if not isinstance(nested, list):
+        if not isinstance(nested, (list, tuple)):
             raise TypeError("nested должен быть списком")
         def infer_shape(obj) -> tuple[int, ...]:
-            if not isinstance(obj, list):
+            if not isinstance(obj, (list, tuple)):
                 return ()
             if len(obj) == 0:
                 raise ValueError("nested должен быть сне ппустым")
@@ -132,7 +132,7 @@ class DenseTensor:
                     raise ValueError("вложенный список должен быть прямоугольным")
             return (len(obj),) + first_shape
         def flatten(obj, result: list[float]) -> None:
-            if isinstance(obj, list):
+            if isinstance(obj, (list, tuple)):
                 for item in obj:
                     flatten(item, result)
             else:

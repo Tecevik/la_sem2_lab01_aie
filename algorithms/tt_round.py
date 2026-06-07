@@ -27,8 +27,6 @@ def tt_round(
         max_rank: максимальный TT-ранг (None = без ограничения)
         eps:      относительная точность усечения
     """
-    if not isinstance(tt,TTTensor):
-        raise TypeError("тт должен быть новым уменьшенным тензором")
     if max_rank is not None and max_rank<1:
         raise ValueError("ранг нужен положительный")
     if eps<0:
