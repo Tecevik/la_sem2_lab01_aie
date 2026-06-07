@@ -49,9 +49,13 @@ def right_canonicalize(tt: TTTensor, backend: BackendInterface) -> TTTensor:
         core = cores[k]
         left_rank,mode_size,right_rank=core.shape
         matrix=core.reshape((left_rank,mode_size*right_rank))
-        q_transposed,r_transposed=backend.qr(backend.transpose(matrix))
-        q=backend.transpose(q_transposed)
-        transfer=backend.transpose(r_transposed)
+        if left_rank <= mode_size*right_rank:
+            q_transposed,r_transposed=backend.qr(backend.transpose(matrix))
+            q=backend.transpose(q_transposed)
+            transfer=backend.transpose(r_transposed)
+        else:
+            u,s,q=backend.svd(matrix, full_matrices=False)
+            transfer=backend.matmul(u, backend.diag(s))
         new_rank=q.shape[0]
         cores[k]=q.reshape((new_rank,mode_size,right_rank))
         previous_core = cores[k-1]
